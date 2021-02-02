@@ -18,11 +18,11 @@ class Picture(db.Model):
     )
 
     shutter_speed = db.Column(
-        db.Integer,
+        db.Float,
     )
 
     aperture = db.Column(
-        db.Integer,
+        db.Float,
     )
 
     flash = db.Column(
@@ -47,7 +47,6 @@ class Picture(db.Model):
 
     location = db.Column(
         db.Text,
-        nullable=False,
     )
 
     camera_make = db.Column(

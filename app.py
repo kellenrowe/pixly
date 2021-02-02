@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags
@@ -22,11 +22,35 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+
 ####################### Routes ###########################
 
 
-@app.route("/", methods=["POST", "GET"])
-def show_form():
-    """ VIEW FUNCTION DESCRIPTION """
+@app.route("/images", methods=["GET"])
+def display_all_image():
+    """ Route for displaying all images """
+   
+    return 
 
-    return render_template("conv_form.html")
+
+@app.route("/images/add", methods=["POST"])
+def add_image():
+    """ Route for uploading a new image """
+
+    # Opening and getting exif data from image
+    try:
+        image = Image.open("test.jpeg")
+    except IOError:
+        pass
+    
+    exif = {}
+    for tag, value in image._getexif().items():
+        if tag in TAGS:
+            exif[TAGS[tag]] = value
+
+
+
+@app.route("/images/<int:id>", methods=["POST"])
+def edit_image():
+    """ Route for edit an image """
+

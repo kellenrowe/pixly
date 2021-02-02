@@ -1,10 +1,10 @@
 import os
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags
 from PIL.ExifTags import TAGS
-# from forms import (ImageAddForm)
+from forms import AddPictureForm
 
 app = Flask(__name__)
 
@@ -22,32 +22,43 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
-
 ####################### Routes ###########################
 
 
 @app.route("/images", methods=["GET"])
 def display_all_image():
     """ Route for displaying all images """
-   
-    return 
+
+    pictures = Picture.query.all()
+
+    return
 
 
-@app.route("/images/add", methods=["POST"])
+@app.route("/images/add", methods=["GET", "POST"])
 def add_image():
     """ Route for uploading a new image """
+    form = AddPictureForm()
 
-    # Opening and getting exif data from image
-    try:
-        image = Image.open("test.jpeg")
-    except IOError:
-        pass
-    
-    exif = {}
-    for tag, value in image._getexif().items():
-        if tag in TAGS:
-            exif[TAGS[tag]] = value
+    if form.validate_on_submit():
+        picture = Picture(
+            photographer=form.photographer.data,
+            caption=form.caption.data)
 
+        # Opening and getting exif data from image
+        try:
+            image = Image.open("test.jpeg")
+        except IOError:
+            pass
+
+        exif = {}
+        for tag, value in image._getexif().items():
+            if tag in TAGS:
+                exif[TAGS[tag]] = value
+
+        db.session.add(picture)
+        db.session.commit()
+    else:
+        return render_template("add_picture.html", form=form)
 
 
 @app.route("/images/<int:id>", methods=["POST"])

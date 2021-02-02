@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../static/base.css" />
+    <title>Pixly</title>
+  </head>
+
+  <body>
+    <main class="container d-flex justify-content-center">
+      <div class="row">
+        <div class="col-10">
+          <h2><a href="/">Pictures go here.</a></h2>
+        </div>
+        <div class="card col-10">
+          {% for msg in get_flashed_messages() %}
+          <div class="alert-danger alert">{{ msg }}</div>
+          {% endfor %}
+
+          <div class="col">{% block content %} {% endblock %}</div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

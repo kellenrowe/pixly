@@ -63,6 +63,16 @@ class Picture(db.Model):
         db.Integer,
     )
 
+    photographer = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
+    caption = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
 
 def connect_db(app):
     """Connect this database to provided Flask app.

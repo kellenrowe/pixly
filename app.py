@@ -1,3 +1,4 @@
+import boto3
 import os
 from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
@@ -6,6 +7,8 @@ from PIL import Image, ImageFilter, ExifTags
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
+from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
+
 
 app = Flask(__name__)
 
@@ -23,7 +26,12 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
-app.config['UPLOADED_IMAGES_DEST'] = "./images/"
+# app.config['UPLOADED_IMAGES_DEST'] = "./images/"
+
+client = boto3.client('s3',
+                      aws_access_key_id=ACCESS_KEY_ID,
+                      aws_secret_access_key=SECRET_KEY)
+
 
 ####################### Routes ###########################
 
@@ -37,68 +45,56 @@ def display_all_image():
     return render_template("all_pictures.html")
 
 
-
 @app.route("/images/add", methods=["GET", "POST"])
 def add_image():
     """ Route for uploading a new image """
-    form = UploadForm()
 
-    print("before validation", form.photo.data)
-    print("before validation", form.caption.data)
-    
+    form = UploadForm()
 
     if form.validate_on_submit():
         f = form.photo.data
         filename = secure_filename(f.filename)
-        print("inside validation", filename)
 
-        f.save(os.path.join(
-            app.config['UPLOADED_IMAGES_DEST'], filename
-        ))
+        f.save(os.path.join(filename))
 
-        try:
-            print("inside try", filename)
-            image = Image.open(f'./images/{filename}')
-        except IOError:
-            pass
-        
+        image = Image.open(f'{filename}')
+
         exif = {}
         for tag, value in image._getexif().items():
             if tag in TAGS:
                 exif[TAGS[tag]] = value
-        
-
-        print("heree", type(exif["ExifImageWidth"]))
 
         picture = Picture(
             photographer=form.photographer.data,
             caption=form.caption.data,
-            date_time=exif["DateTime"],
-            camera_make=exif["Make"],
-            camera_model=exif["Model"],
-            # shutter_speed=exif["ShutterSpeedValue"],
-            # aperture=exif["ApertureValue"],
-            iso=exif["ISOSpeedRatings"],
-            flash=exif["Flash"],
-            pic_width=exif["ExifImageWidth"],
-            pic_height=exif["ExifImageHeight"],
+            date_time=exif.get('DateTime'),
+            camera_make=exif.get('Make'),
+            camera_model=exif.get('Model'),
+            iso=exif.get('ISOSpeedRatings'),
+            flash=exif.get('Flash'),
+            pic_width=exif.get('ExifImageWidth'),
+            pic_height=exif.get('ExifImageHeight'),
             # location=exif[""],
-    )
+            image_url=IMAGE_URL,
+        )
 
         db.session.add(picture)
         db.session.commit()
 
-        print("return redirect")
-        #need to grab id
-        return redirect(f'/images')
-        # return redirect(f'/images/{id}')
-
+        upload_file_bucket = BUCKET
+        upload_file_key = picture.id
+        client.upload_file(filename,
+                           upload_file_bucket,
+                           str(upload_file_key),
+                           ExtraArgs={'ACL': 'public-read'})
+        return redirect('/images')
     else:
         print("return render template")
         return render_template("add_picture.html", form=form)
 
 
-# @app.route("/images/<int:id>", methods=["POST"])
-# def edit_image():
-#     """ Route for edit an image """
+@app.route("/images/<int:id>", methods=["GET"])
+def edit_image(id):
+    """ Route for viewing and editing an image """
 
+    return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}')

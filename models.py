@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 def connect_db(app):
     """Connect this database to provided Flask app.
 
@@ -21,14 +22,15 @@ class Picture(db.Model):
 
     __tablename__ = 'pictures'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-    )
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+
+    image_url = db.Column(db.Text,
+                          nullable=False)
 
     shutter_speed = db.Column(
-        db.Float,
-    )
+        db.Float,)
 
     aperture = db.Column(
         db.Float,
@@ -44,12 +46,10 @@ class Picture(db.Model):
 
     pic_height = db.Column(
         db.Integer,
-        nullable=False,
     )
 
     pic_width = db.Column(
         db.Integer,
-        nullable=False,
     )
 
     location = db.Column(
@@ -58,12 +58,10 @@ class Picture(db.Model):
 
     camera_make = db.Column(
         db.Text,
-        nullable=False,
     )
 
     camera_model = db.Column(
         db.Text,
-        nullable=False,
     )
 
     iso = db.Column(
@@ -79,6 +77,3 @@ class Picture(db.Model):
         db.Text,
         nullable=False,
     )
-
-
-

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form action="/add" id="add_picture_form" method="POST">
+<form action="/images/add" id="add_picture_form" method="POST" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
 
  {% for field in form
@@ -16,8 +16,6 @@
         {{ error }}
       {% endfor %}
     </div>
-
-
 
     {% endfor %}
 

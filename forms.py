@@ -6,17 +6,18 @@ from wtforms.validators import InputRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 # from flask_uploads import UploadSet, IMAGES
 
+# from werkzeug.utils import secure_filename
 # images = UploadSet('images', IMAGES)
 
 
-class AddPictureForm(FlaskForm):
+class UploadForm(FlaskForm):
     """ Form to add a picture. """
     photographer = StringField("Name of Photographer",
                                validators=[InputRequired()])
     caption = StringField("Caption",
                           validators=[InputRequired()])
-    picture = FileField("Chose a picture for upload",
-                        validators=[FileRequired(),
-                                    FileAllowed(
-                                        ['jpg', 'png', 'svg', 'jpeg'],
-                                        "Images Only")])
+                       
+    photo = FileField("Chose a photo for upload",  
+                      validators=[FileRequired()] )
+
+

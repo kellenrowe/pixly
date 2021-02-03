@@ -40,7 +40,7 @@ class Picture(db.Model):
         nullable=False,
     )
 
-    pic_length = db.Column(
+    pic_width = db.Column(
         db.Integer,
         nullable=False,
     )

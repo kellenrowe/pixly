@@ -4,7 +4,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags
 from PIL.ExifTags import TAGS
-from forms import AddPictureForm
+from forms import UploadForm
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -22,30 +23,40 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+app.config['UPLOADED_IMAGES_DEST'] = "./images/"
+
 ####################### Routes ###########################
 
 
-@app.route("/images", methods=["GET"])
-def display_all_image():
-    """ Route for displaying all images """
+# @app.route("/images", methods=["GET"])
+# def display_all_image():
+#     """ Route for displaying all images """
 
-    pictures = Picture.query.all()
+#     pictures = Picture.query.all()
 
-    return
+#     return
 
 
 @app.route("/images/add", methods=["GET", "POST"])
 def add_image():
     """ Route for uploading a new image """
-    form = AddPictureForm()
+    form = UploadForm()
+
+    print("before validation", form.photo.data)
+    print("before validation", form.caption.data)
+    
 
     if form.validate_on_submit():
-        picture = Picture(
-            photographer=form.photographer.data,
-            caption=form.caption.data)
+        f = form.photo.data
+        filename = secure_filename(f.filename)
+        print("inside validation")
 
-        # Opening and getting exif data from image
+        f.save(os.path.join(
+            app.config['UPLOADED_IMAGES_DEST'], filename
+        ))
+
         try:
+            print("inside try")
             image = Image.open("test.jpeg")
         except IOError:
             pass
@@ -54,14 +65,38 @@ def add_image():
         for tag, value in image._getexif().items():
             if tag in TAGS:
                 exif[TAGS[tag]] = value
+        
+        print("ExifImageWidth", type(exif["ExifImageWidth"]))
+
+        picture = Picture(
+            photographer=form.photographer.data,
+            caption=form.caption.data,
+            date_time=exif["DateTime"],
+            camera_make=exif["Make"],
+            camera_model=exif["Model"],
+            # shutter_speed=exif["ShutterSpeedValue"],
+            # aperture=exif["ApertureValue"],
+            iso=exif["ISOSpeedRatings"],
+            flash=exif["Flash"],
+            pic_width=exif["ExifImageWidth"],
+            pic_height=exif["ExifImageHeight"],
+            # location=exif[""],
+    )
 
         db.session.add(picture)
         db.session.commit()
+
+        print("return redirect")
+        #need to grab id
+        return redirect(f'/images')
+        # return redirect(f'/images/{id}')
+
     else:
+        print("return render template")
         return render_template("add_picture.html", form=form)
 
 
-@app.route("/images/<int:id>", methods=["POST"])
-def edit_image():
-    """ Route for edit an image """
+# @app.route("/images/<int:id>", methods=["POST"])
+# def edit_image():
+#     """ Route for edit an image """
 

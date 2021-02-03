@@ -28,13 +28,14 @@ app.config['UPLOADED_IMAGES_DEST'] = "./images/"
 ####################### Routes ###########################
 
 
-# @app.route("/images", methods=["GET"])
-# def display_all_image():
-#     """ Route for displaying all images """
+@app.route("/images", methods=["GET"])
+def display_all_image():
+    """ Route for displaying all images """
 
-#     pictures = Picture.query.all()
+    # pictures = Picture.query.all()
 
-#     return
+    return render_template("all_pictures.html")
+
 
 
 @app.route("/images/add", methods=["GET", "POST"])

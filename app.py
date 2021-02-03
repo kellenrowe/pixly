@@ -49,24 +49,25 @@ def add_image():
     if form.validate_on_submit():
         f = form.photo.data
         filename = secure_filename(f.filename)
-        print("inside validation")
+        print("inside validation", filename)
 
         f.save(os.path.join(
             app.config['UPLOADED_IMAGES_DEST'], filename
         ))
 
         try:
-            print("inside try")
-            image = Image.open("test.jpeg")
+            print("inside try", filename)
+            image = Image.open(f'./images/{filename}')
         except IOError:
             pass
-
+    
         exif = {}
         for tag, value in image._getexif().items():
             if tag in TAGS:
                 exif[TAGS[tag]] = value
         
-        print("ExifImageWidth", type(exif["ExifImageWidth"]))
+
+        print("heree", type(exif["ExifImageWidth"]))
 
         picture = Picture(
             photographer=form.photographer.data,

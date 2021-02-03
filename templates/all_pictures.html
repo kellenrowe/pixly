@@ -3,10 +3,9 @@
 {% block content %}
 <ul>
     {% for pet in pets %}
-    <li> <img class="petImage" src="{{pet.photo_url}}">
-        <p><a href="/{{pet.id}}">{{ pet.name }}</a> {%if pet.available %} <b>is available!</b> {%endif%} </p>
+    <li> <img class="Image" src="{{pet.photo_url}}">
     </li>
     {% endfor %}
 </ul>
-<a href="/add" class="btn btn-success">Add a Pet</a>
+<a href="/images/add" class="btn btn-success">Add a picture</a>
 {% endblock %}

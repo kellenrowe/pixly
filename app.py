@@ -60,7 +60,7 @@ def add_image():
             image = Image.open(f'./images/{filename}')
         except IOError:
             pass
-    
+        
         exif = {}
         for tag, value in image._getexif().items():
             if tag in TAGS:

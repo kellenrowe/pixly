@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- <ul>
-    {% for pet in pets %}
-    <li> <img class="Image" src="{{pet.photo_url}}">
+<ul>
+    {% for picture in pictures %}
+    <li> 
+        <a href="/images/{{picture.id}}">
+            <img class="Image" src="{{url}}{{picture.id}}">
+        </a>
     </li>
     {% endfor %}
-</ul> -->
+</ul>
 <a href="/images/add" class="btn btn-success">Add a picture</a>
 {% endblock %}

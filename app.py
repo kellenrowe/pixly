@@ -2,6 +2,7 @@ import boto3
 import os
 from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_cors import CORS
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags
 from PIL.ExifTags import TAGS
@@ -11,6 +12,9 @@ from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 
 
 app = Flask(__name__)
+
+# By default allows CORS for all domains and all routes
+CORS(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -40,9 +44,17 @@ client = boto3.client('s3',
 def display_all_image():
     """ Route for displaying all images """
 
-    # pictures = Picture.query.all()
+    pictures = Picture.query.all()
 
-    return render_template("all_pictures.html")
+    picturesUrl = []
+    for picture in pictures:
+        picturesUrl.append(f'{IMAGE_URL}{picture.id}')
+
+    return jsonify(picturesUrl)
+
+
+
+    # return render_template("all_pictures.html", pictures=pictures, url=IMAGE_URL)
 
 
 @app.route("/images/add", methods=["GET", "POST"])
@@ -87,6 +99,7 @@ def add_image():
                            upload_file_bucket,
                            str(upload_file_key),
                            ExtraArgs={'ACL': 'public-read'})
+        os.remove(filename)
         return redirect('/images')
     else:
         print("return render template")

@@ -1,5 +1,7 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <img src="{{url}}" alt="photoNotHERE">
+{% extends 'base.html' %} {% block content %}
+<link rel="stylesheet" href="../static/edit_picture.css" />
+   
+<div class="container mx-auto text-center imgDiv">
+    <img class="edit-img" src="{{url}}" alt="photoNotHERE">
+</div>
 {% endblock %}

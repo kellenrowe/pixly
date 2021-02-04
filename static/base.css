@@ -1,19 +1,27 @@
 nav a {
-    color: rgb(177, 177, 177);
-    letter-spacing: 1px;
+  color: rgb(177, 177, 177);
+  letter-spacing: 1px;
+}
+
+nav ul {
+  text-align: left;
+}
+
+nav li {
+  margin-left: 20px !important;
 }
 
 .logo {
-    /* font-family: 'Courgette', cursive; */
-    font-family: 'Lato', sans-serif;
-    font-weight: 100;
-    font-size: 30px;
-    letter-spacing: 2px;
+  /* font-family: 'Courgette', cursive; */
+  font-family: "Lato", sans-serif;
+  font-weight: 100;
+  font-size: 30px;
+  letter-spacing: 2px;
 }
 
 nav a:hover {
-    color: rgb(225, 225, 225);
-    text-decoration: none;
+  color: rgb(225, 225, 225);
+  text-decoration: none;
 }
 
 /* .navLinks {
@@ -21,15 +29,21 @@ nav a:hover {
 } */
 
 .body {
-    background-color: rgb(14, 14, 14);
+  background-color: rgb(14, 14, 14);
 }
 
 .navbar {
-    background-color: rgb(19, 19, 19);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  background-color: rgb(19, 19, 19);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .navbar {
-    box-shadow: 3px 3px .5em .01em #a2b4c6, -3px 3px .5em .01em #a2b4c6;
+  box-shadow: 3px 3px 0.5em 0.01em #a2b4c6, -3px 3px 0.5em 0.01em #a2b4c6;
+}
+
+@media screen and (min-width: 992px) {
+  nav ul {
+    text-align: center;
+  }
 }

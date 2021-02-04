@@ -1,10 +1,13 @@
 div .image {
-    height: 200px;
+  height: 200px;
 }
 
 .allPicsDiv {
-    margin-top: 150px;
-    /* display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; */
+  margin-top: 150px;
+  height: 100vh;
+}
+
+.image:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.03);
 }

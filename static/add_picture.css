@@ -1,5 +1,5 @@
 .formDiv {
-    height: calc(100vw - 820px);
+    height: 100vh;
 }
 
 form {
@@ -34,6 +34,7 @@ form {
     transition: .5s;
     pointer-events: none;
     color: #828282;
+    letter-spacing: 1px;
 }
 
 .formInput:focus ~ label,
@@ -41,5 +42,21 @@ form {
     top: -12px;
     left: 0;
     font-size: 12px;
-    color: #a2b4c6;
+    letter-spacing: 1px;
+    color: #a9c2dc;
+}
+
+.formInput:focus,
+.formInput:valid {
+    border-bottom: .12rem solid #a9c2dcaa;
+}
+
+.add-button {
+    color: #a9c2dc;
+    border: 1px solid #a9c2dc;
+}
+
+.add-button:hover {
+    background-color: #a9c2dc;
+    color: #191919;
 }

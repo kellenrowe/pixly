@@ -1,5 +1,5 @@
 .homepage {
-    height: calc(100vh - 10px);
+    height: 100vh;
     display: flex;
     align-items: center;
     color: #a2b4c6;

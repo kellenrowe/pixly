@@ -100,7 +100,7 @@ def add_image():
         db.session.commit()
 
 # TODO: f is the entire image object and we can possibly use that instead of filename
-        
+
         upload_file_bucket = BUCKET
         upload_file_key = picture.id
         client.upload_file(filename,
@@ -117,69 +117,88 @@ def add_image():
 def edit_image(id):
     """ Route for viewing and editing an image """
 
+    if os.path.exists(f'./templates{id}.jpg'):
+        print('exists ******************* ')
+        return render_template('edit_picture.html',
+                               url=f'{id}.jpg', id=id)
+
+    print('doesnt exist *********')
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}', id=id)
 
 
-@app.route("/images/<id>/<edit>", methods=["GET", "POST"])
+@app.route("/images/<id>/save", methods=["GET", "POST"])
+def edit_image_save(id):
+
+    filename = f'{id}.jpg'
+
+    upload_file_bucket = BUCKET
+    upload_file_key = id
+    client.upload_file(
+        filename,
+        upload_file_bucket,
+        upload_file_key,
+        ExtraArgs={'ACL': 'public-read'}
+    )
+
+    os.remove(filename)
+    return redirect(f'/images/{id}')
+
+
+@app.route("/images/<id>/cancel", methods=["GET", "POST"])
+def edit_image_cancel(id):
+
+    filename = f'{id}.jpg'
+    os.remove(filename)
+    return redirect(f'/images/{id}')
+
+
+@app.route("/images/<int:id>/<edit>", methods=["GET", "POST"])
 def edit_image_edit(id, edit):
 
-    # Revert all edits
-    if edit == "cancel":
-        return redirect(f'/images/{id}')
-
-    print("id here", id)
-    filename = f'{id}.jpeg'
-
-    # Save changes to AWS 
-    if edit == "save":
-        upload_file_bucket = BUCKET
-        upload_file_key = id
-        client.upload_file(
-            filename,
-            upload_file_bucket,
-            upload_file_key,
-            ExtraArgs={'ACL': 'public-read'}
-        )
-
-        os.remove(filename)
-        return redirect(f'/images/{id}')
-
-    picture = Picture.query.get_or_404(int(id))
-    filename = picture.file_name
- 
+    filename = f'{id}.jpg'
+    # breakpoint()
     s3 = boto3.resource('s3')
 
-    if not os.path.exists(f'./{filename}'):
+    if not os.path.exists(f'/templates/{filename}'):
         # Download the picture
+        print('need to download')
         try:
-            s3.Bucket(BUCKET).download_file(id, id)
+            s3.Bucket(BUCKET).download_file(str(id), str(id))
 
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 print("The object does not exist.")
             else:
                 raise
-        print("filenamern", filename)
-        os.rename(id, filename)
+        print("filename = ", filename)
+        os.rename(str(id), filename)
 
     image = Image.open(filename)
 
     if edit == "grayscale":
         newImage = ImageOps.grayscale(image)
-     
+        newImage.save(os.path.join(f'/templates/{filename}'))
+        return render_template('edit_picture.html',
+                               url=f'/{filename}',
+                               id=id)
+
     if edit == "left":
+        print('edit left')
         newImage = image.rotate(90, expand=True)
-        
+        newImage.save(os.path.join(f'./templates/{filename}'))
+        print('filename = ', filename)
+        return redirect(f'/images/{id}')
+
     if edit == "right":
         newImage = image.rotate(-90, expand=True)
-   
+        newImage.save(os.path.join(f'/templates/{filename}'))
+        return render_template('edit_picture.html',
+                               url=f'/{filename}',
+                               id=id)
+
     if edit == "posterize":
         newImage = ImageOps.posterize(image, 5)
-       
-    newImage.save(os.path.join(filename))
-
-    return render_template('edit_picture.html',
-                           url=f'/{filename}', 
-                           id=id)
- 
-
+        newImage.save(os.path.join(f'/templates/{filename}'))
+        return render_template('edit_picture.html',
+                               url=f'/{filename}',
+                               id=id)

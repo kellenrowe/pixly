@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-<link rel="stylesheet" href="../static/edit_picture.css" />
+<link rel="stylesheet" href="/static/edit_picture.css" />
 
 <!-- <div>
     <a href="/images/{{id}}/left">
@@ -53,6 +53,6 @@
 </nav>
    
 <div class="container mx-auto text-center imgDiv">
-    <img class="edit-img" src="{{url}}" alt="photoNotHERE">
+    <img class="edit-img" src="{{url}}" alt="{{url}}">
 </div>
 {% endblock %}

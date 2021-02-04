@@ -123,44 +123,63 @@ def edit_image(id):
 @app.route("/images/<id>/<edit>", methods=["GET", "POST"])
 def edit_image_edit(id, edit):
 
+    # Revert all edits
+    if edit == "cancel":
+        return redirect(f'/images/{id}')
+
+    print("id here", id)
+    filename = f'{id}.jpeg'
+
+    # Save changes to AWS 
+    if edit == "save":
+        upload_file_bucket = BUCKET
+        upload_file_key = id
+        client.upload_file(
+            filename,
+            upload_file_bucket,
+            upload_file_key,
+            ExtraArgs={'ACL': 'public-read'}
+        )
+
+        os.remove(filename)
+        return redirect(f'/images/{id}')
+
     picture = Picture.query.get_or_404(int(id))
     filename = picture.file_name
-
+ 
     s3 = boto3.resource('s3')
 
-    # Download the picture
-    try:
-        s3.Bucket(BUCKET).download_file(id, id)
+    if not os.path.exists(f'./{filename}'):
+        # Download the picture
+        try:
+            s3.Bucket(BUCKET).download_file(id, id)
 
-    except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "404":
-            print("The object does not exist.")
-        else:
-            raise
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "404":
+                print("The object does not exist.")
+            else:
+                raise
+        print("filenamern", filename)
+        os.rename(id, filename)
 
-    filename = f'{id}.jpeg'
-    os.rename(id, filename)
     image = Image.open(filename)
+
     if edit == "grayscale":
         newImage = ImageOps.grayscale(image)
+     
     if edit == "left":
         newImage = image.rotate(90, expand=True)
+        
     if edit == "right":
         newImage = image.rotate(-90, expand=True)
+   
     if edit == "posterize":
         newImage = ImageOps.posterize(image, 5)
-
+       
     newImage.save(os.path.join(filename))
 
-    # Update the picture
-    upload_file_bucket = BUCKET
-    upload_file_key = id
-    client.upload_file(
-        filename,
-        upload_file_bucket,
-        upload_file_key,
-        ExtraArgs={'ACL': 'public-read'}
-    )
+    return render_template('edit_picture.html',
+                           url=f'/{filename}', 
+                           id=id)
+ 
 
-    os.remove(filename)
-    return redirect(f'/images/{id}')

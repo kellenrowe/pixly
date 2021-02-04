@@ -1,7 +1,10 @@
-ul li {
-    list-style-type: none;
+div .image {
+    height: 200px;
 }
 
-ul li .image {
-    width: 40%;
+.allPicsDiv {
+    margin-top: 150px;
+    /* display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; */
 }

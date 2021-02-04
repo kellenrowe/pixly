@@ -1,5 +1,21 @@
 .homepage {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 10px);
     display: flex;
     align-items: center;
+    color: #a2b4c6;
+}
+
+.slogan {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 35px;
+    /* letter-spacing: 2px; */
+}
+
+.logo {
+    font-family: 'Lato', sans-serif;
+    font-weight: 100;
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: rgb(177, 177, 177);
 }

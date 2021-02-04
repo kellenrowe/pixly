@@ -3,45 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="../static/base.css">
+    <!-- Bootstrap -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css"
     />
+    <!-- logo font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <!-- cursive -->
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <!-- thin -->
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Lato:wght@100&display=swap" rel="stylesheet">
+    <!-- something -->
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 
     <title>Pixly</title>
   </head>
 
   <body>
-    <main class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Pixly</a>
+    <main>
+      <nav class="container navbar fixed-top navbar-expand-lg">
+        <a class="logo ml-3" href="/">Pixly</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto">
+        <div class="collapse navbar-collapse" 
+              id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto px-4 text-center navLinks">
             <li class="nav-item mr-3">
               <a class="nav-link" href="/">Home </a>
             </li>
             <li class="nav-item mr-3">
               <a class="nav-link" href="/images">Pictures</a>
             </li>
-            <li class="nav-item mr-3">
+            <li class="nav-item">
               <a class="nav-link" href="/images/add">Add Picture</a>
             </li>
           </ul>
-          
         </div>
       </nav>
-      <div class="row">
-        <div class="col-12">
+      <div class="row body">
+        <!-- <div class="col-12"> -->
           {% for msg in get_flashed_messages() %}
           <div class="alert-danger alert">{{ msg }}</div>
           {% endfor %}
 
           <div class="col">{% block content %} {% endblock %}</div>
-        </div>
+        <!-- </div> -->
       </div>
     </main>
   </body>

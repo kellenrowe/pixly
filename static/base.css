@@ -1,0 +1,35 @@
+nav a {
+    color: rgb(177, 177, 177);
+    letter-spacing: 1px;
+}
+
+.logo {
+    /* font-family: 'Courgette', cursive; */
+    font-family: 'Lato', sans-serif;
+    font-weight: 100;
+    font-size: 30px;
+    letter-spacing: 2px;
+}
+
+nav a:hover {
+    color: rgb(225, 225, 225);
+    text-decoration: none;
+}
+
+/* .navLinks {
+    border-bottom: 1px solid rgba(203, 203, 203, 0.16);
+} */
+
+.body {
+    background-color: rgb(14, 14, 14);
+}
+
+.navbar {
+    background-color: rgb(19, 19, 19);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.navbar {
+    box-shadow: 3px 3px .5em .01em #a2b4c6, -3px 3px .5em .01em #a2b4c6;
+}

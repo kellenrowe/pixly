@@ -1,29 +1,32 @@
 {% extends 'base.html' %} {% block content %}
 <link rel="stylesheet" href="../static/add_picture.css">
 
-<form action="/images/add" 
-      id="add_picture_form" 
-      method="POST" 
-      enctype="multipart/form-data"
-      class="col-11 col-sm-8 col-md-6 col-lg-4 py-5 px-5 mt-5 mx-auto text-center">
-
-  {{ form.hidden_tag() }}
-
- {% for field in form
-    if field.widget.input_type != 'hidden' %}
-
-    <div class="form-group formField">
-      {{ field(class="formInput") }}
-      {{ field.label(class="formLabel") }}
-
-      {% for error in field.errors %}
-        {{ error }}
+<div class="formDiv">
+  <form action="/images/add" 
+        id="add_picture_form" 
+        method="POST" 
+        enctype="multipart/form-data"
+        class="col-11 col-sm-8 col-md-6 col-lg-4 pt-5 px-5 mx-auto text-center">
+  
+    {{ form.hidden_tag() }}
+  
+   {% for field in form
+      if field.widget.input_type != 'hidden' %}
+  
+      <div class="form-group formField">
+        {{ field(class="formInput") }}
+        {{ field.label(class="formLabel") }}
+  
+        {% for error in field.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+  
       {% endfor %}
-    </div>
+  
+    <button class="btn btn-primary" type="submit">Add Picture</button>
+  </form>
+</div>
 
-    {% endfor %}
-
-  <button class="btn btn-primary" type="submit">Add Picture</button>
-</form>
 
 {% endblock %}

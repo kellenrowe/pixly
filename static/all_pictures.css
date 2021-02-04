@@ -1,0 +1,7 @@
+ul li {
+    list-style-type: none;
+}
+
+ul li .image {
+    width: 40%;
+}

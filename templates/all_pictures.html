@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<link rel="stylesheet" href="../static/all_pictures.css">
 
-{% block content %}
 <ul>
     {% for picture in pictures %}
     <li> 
         <a href="/images/{{picture.id}}">
-            <img class="Image" src="{{url}}{{picture.id}}">
+            <img class="image" src="{{picture.url}}">
         </a>
     </li>
     {% endfor %}
 </ul>
-<a href="/images/add" class="btn btn-success">Add a picture</a>
+
 {% endblock %}

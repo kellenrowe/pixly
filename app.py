@@ -2,7 +2,7 @@ import boto3
 import os
 from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_cors import CORS
+# from flask_cors import CORS
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags
 from PIL.ExifTags import TAGS
@@ -14,7 +14,7 @@ from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 app = Flask(__name__)
 
 # By default allows CORS for all domains and all routes
-CORS(app)
+# CORS(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -40,6 +40,13 @@ client = boto3.client('s3',
 ####################### Routes ###########################
 
 
+@app.route("/", methods=["GET"])
+def display_homepage():
+    """ Route home page """
+
+    return render_template("homepage.html")
+
+
 @app.route("/images", methods=["GET"])
 def display_all_image():
     """ Route for displaying all images """
@@ -48,13 +55,10 @@ def display_all_image():
 
     picturesUrl = []
     for picture in pictures:
-        picturesUrl.append(f'{IMAGE_URL}{picture.id}')
+        picturesUrl.append({"url": f'{IMAGE_URL}{picture.id}',
+                            "id": f'{picture.id}'})
 
-    return jsonify(picturesUrl)
-
-
-
-    # return render_template("all_pictures.html", pictures=pictures, url=IMAGE_URL)
+    return render_template("all_pictures.html", pictures=picturesUrl)
 
 
 @app.route("/images/add", methods=["GET", "POST"])
@@ -93,6 +97,8 @@ def add_image():
         db.session.add(picture)
         db.session.commit()
 
+# TODO: f is the entire image object and we can possibly use that instead of filename
+        
         upload_file_bucket = BUCKET
         upload_file_key = picture.id
         client.upload_file(filename,
@@ -102,7 +108,6 @@ def add_image():
         os.remove(filename)
         return redirect('/images')
     else:
-        print("return render template")
         return render_template("add_picture.html", form=form)
 
 

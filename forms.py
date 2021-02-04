@@ -16,8 +16,6 @@ class UploadForm(FlaskForm):
                                validators=[InputRequired()])
     caption = StringField("Caption",
                           validators=[InputRequired()])
-                       
-    photo = FileField("Chose a photo for upload",  
-                      validators=[FileRequired()] )
-
-
+                 
+    photo = FileField("",
+                      validators=[FileRequired()])

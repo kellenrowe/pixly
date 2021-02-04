@@ -1,5 +1,56 @@
 {% extends 'base.html' %} {% block content %}
 <link rel="stylesheet" href="../static/edit_picture.css" />
+
+<!-- <div>
+    <a href="/images/{{id}}/left">
+        <i class="fas fa-undo mt-5 fa-sm"></i>
+    </a>
+    <a href="/images/{{id}}/right">
+        <i class="fas fa-undo fa-flip-horizontal mt-5 fa-sm"></i>
+    </a>
+    <p>Filters:</p>
+    <a class="btn btn-small btn-outline-light" href="/images/{{id}}/grayscale">
+        B/W
+    </a>
+    <a class="btn btn-small btn-outline-light" href="/images/{{id}}/posterize">
+        Posterize
+    </a>
+</div> -->
+
+<nav class="navbar nav2">
+    <ul class="navbar-nav row mx-auto px-4 navLinks">
+        <li class="nav-item mr-1">
+            <a href="/images/{{id}}/left">
+                <i class="fas fa-undo my-auto fa-sm"></i>
+            </a>
+        </li>
+        <li class="nav-item mr-3">
+            <a href="/images/{{id}}/right">
+                <i class="fas fa-undo fa-flip-horizontal my-auto fa-sm"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="edit-btns py-0" href="/images/{{id}}/grayscale">
+                B/W
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="edit-btns py-0" href="/images/{{id}}/posterize">
+                Posterize
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="edit-btns py-0" href="/images/{{id}}/save">
+                Save
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="edit-btns py-0" href="/images/{{id}}/cancel">
+                Revert
+            </a>
+        </li>
+    </ul>
+</nav>
    
 <div class="container mx-auto text-center imgDiv">
     <img class="edit-img" src="{{url}}" alt="photoNotHERE">

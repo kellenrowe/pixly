@@ -4,11 +4,12 @@ from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 # from flask_cors import CORS
 from models import (db, connect_db, Picture)
-from PIL import Image, ImageFilter, ExifTags
+from PIL import Image, ImageFilter, ExifTags, ImageOps
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
 from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
+import botocore
 
 
 app = Flask(__name__)
@@ -92,6 +93,7 @@ def add_image():
             pic_height=exif.get('ExifImageHeight'),
             # location=exif[""],
             image_url=IMAGE_URL,
+            file_name=filename
         )
 
         db.session.add(picture)
@@ -116,3 +118,81 @@ def edit_image(id):
     """ Route for viewing and editing an image """
 
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}')
+
+@app.route("/images/<id>/grayscale", methods=["GET", "POST"])
+def edit_image_greyscale(id):
+
+    picture = Picture.query.get_or_404(int(id))
+    print("pic query", picture.file_name)
+    filename = picture.file_name
+
+    s3 = boto3.resource('s3')
+
+    # Download the picture
+    try:
+        s3.Bucket(BUCKET).download_file(id, id)
+    
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
+    
+    filename = f'{id}.jpeg'
+    os.rename(id, filename)
+    image = Image.open(filename)
+    newImage = ImageOps.grayscale(image)
+    newImage.save(os.path.join(filename))
+
+    # Update the picture
+    upload_file_bucket = BUCKET
+    upload_file_key = id
+    client.upload_file(
+        filename,
+        upload_file_bucket,
+        upload_file_key,
+        ExtraArgs={'ACL': 'public-read'}
+    )
+
+    os.remove(filename)
+    return redirect(f'/images/{id}')
+
+
+@app.route("/images/<id>/rotate", methods=["GET", "POST"])
+def edit_image_rotate(id):
+
+    picture = Picture.query.get_or_404(int(id))
+    print("pic query", picture.file_name)
+    filename = picture.file_name
+
+    s3 = boto3.resource('s3')
+
+    # Download the picture
+    try:
+        s3.Bucket(BUCKET).download_file(id, id)
+    
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
+    
+    filename = f'{id}.jpeg'
+    os.rename(id, filename)
+    image = Image.open(filename)
+    newImage = image.rotate(90)
+    newImage.save(os.path.join(filename))
+
+    # Update the picture
+    upload_file_bucket = BUCKET
+    upload_file_key = id
+    client.upload_file(
+        filename,
+        upload_file_bucket,
+        upload_file_key,
+        ExtraArgs={'ACL': 'public-read'}
+    )
+
+    os.remove(filename)
+    return redirect(f'/images/{id}')
+

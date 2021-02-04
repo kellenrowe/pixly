@@ -28,6 +28,9 @@ class Picture(db.Model):
 
     image_url = db.Column(db.Text,
                           nullable=False)
+    
+    file_name = db.Column(db.Text,
+                          nullable=False)
 
     shutter_speed = db.Column(
         db.Float,)

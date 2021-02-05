@@ -59,12 +59,18 @@ def display_all_image():
 
     # search function
     if request.args.get("search"):
-        if(request.args.get("searchField") == "caption"):
-            pictures = Picture.query.filter(Picture.caption.ilike(
-                f'%{request.args.get("search")}%')) 
-        else:
-            pictures = Picture.query.filter(Picture.photographer.ilike(
-                f'%{request.args.get("search")}%'))
+        # if(request.args.get("searchField") == "caption"):
+        #     pictures = Picture.query.filter(Picture.caption.ilike(
+        #         f'%{request.args.get("search")}%')) 
+        # else:
+        #     pictures = Picture.query.filter(Picture.photographer.ilike(
+        #         f'%{request.args.get("search")}%'))
+
+        pictures = Picture.query.filter(db.or_(
+            Picture.caption.ilike(
+                f'%{request.args.get("search")}%'), Picture.photographer.ilike(
+                f'%{request.args.get("search")}%'))).all()
+    
     else:
         pictures = Picture.query.all()
 

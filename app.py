@@ -7,20 +7,14 @@ from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance, ImageFile
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
-# from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 import botocore
-# from boto3.s3.connection import S3Connection
 
 ACCESS_KEY_ID = os.environ["ACCESS_KEY_ID"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 BUCKET = os.environ["BUCKET"]
 IMAGE_URL = os.environ["IMAGE_URL"]
-# s3 = S3Connection(os.environ["ACCESS_KEY_ID"], os.environ["SECRET_KEY"])
 
 app = Flask(__name__, static_folder="./static")
-
-# By default allows CORS for all domains and all routes
-# CORS(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -29,7 +23,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 # debug = DebugToolbarExtension(app)
 
@@ -37,7 +31,6 @@ connect_db(app)
 db.create_all()
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-# app.config['UPLOADED_IMAGES_DEST'] = "./images/"
 
 client = boto3.client('s3',
                       aws_access_key_id=ACCESS_KEY_ID,
@@ -195,7 +188,6 @@ def edit_image(id):
 @app.route("/images/<int:id>/<edit>", methods=["GET", "POST"])
 def edit_image_edit(id, edit):
 
-    # print('edit ******* ', edit)
     filename = f'{id}.png'
     s3 = boto3.resource('s3',
                         aws_access_key_id=ACCESS_KEY_ID,
@@ -212,10 +204,8 @@ def edit_image_edit(id, edit):
             print("The object does not exist.")
         else:
             raise
-        # print("filename = ", filename)
     os.rename(str(id), filename)
     image = Image.open(filename)
-        # print("opening image from aws")
     # else:
     #     image = Image.open(f'./static/{filename}')
     #     # print("opening image from images")

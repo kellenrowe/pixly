@@ -4,7 +4,7 @@ from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 # from flask_cors import CORS
 from models import (db, connect_db, Picture)
-from PIL import Image, ImageFilter, ExifTags, ImageOps
+from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
@@ -117,10 +117,10 @@ def add_image():
 def edit_image(id):
     """ Route for viewing and editing an image """
 
-    if os.path.exists(f'./templates{id}.jpg'):
+    if os.path.exists(f'./static/images/{id}.jpg'):
         print('exists ******************* ')
         return render_template('edit_picture.html',
-                               url=f'{id}.jpg', id=id)
+                               url=f'../static/images/{id}.jpg', id=id)
 
     print('doesnt exist *********')
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}', id=id)
@@ -141,6 +141,7 @@ def edit_image_save(id):
     )
 
     os.remove(filename)
+    os.remove(f'./static/images/{filename}')
     return redirect(f'/images/{id}')
 
 
@@ -149,6 +150,7 @@ def edit_image_cancel(id):
 
     filename = f'{id}.jpg'
     os.remove(filename)
+    os.remove(f'./static/images/{filename}')
     return redirect(f'/images/{id}')
 
 
@@ -156,10 +158,9 @@ def edit_image_cancel(id):
 def edit_image_edit(id, edit):
 
     filename = f'{id}.jpg'
-    # breakpoint()
     s3 = boto3.resource('s3')
 
-    if not os.path.exists(f'/templates/{filename}'):
+    if not os.path.exists(f'./static/images/{filename}'):
         # Download the picture
         print('need to download')
         try:
@@ -172,33 +173,41 @@ def edit_image_edit(id, edit):
                 raise
         print("filename = ", filename)
         os.rename(str(id), filename)
-
-    image = Image.open(filename)
-
+        image = Image.open(filename)
+        print("opening image from aws")
+    else:
+        image = Image.open(f'./static/images/{filename}')
+        print("opening image from images")
     if edit == "grayscale":
-        newImage = ImageOps.grayscale(image)
-        newImage.save(os.path.join(f'/templates/{filename}'))
-        return render_template('edit_picture.html',
-                               url=f'/{filename}',
-                               id=id)
+        newImage = ImageOps.grayscale(image)       
 
     if edit == "left":
         print('edit left')
         newImage = image.rotate(90, expand=True)
-        newImage.save(os.path.join(f'./templates/{filename}'))
-        print('filename = ', filename)
-        return redirect(f'/images/{id}')
 
     if edit == "right":
         newImage = image.rotate(-90, expand=True)
-        newImage.save(os.path.join(f'/templates/{filename}'))
-        return render_template('edit_picture.html',
-                               url=f'/{filename}',
-                               id=id)
 
     if edit == "posterize":
         newImage = ImageOps.posterize(image, 5)
-        newImage.save(os.path.join(f'/templates/{filename}'))
-        return render_template('edit_picture.html',
-                               url=f'/{filename}',
-                               id=id)
+
+    if edit == "emboss":
+        newImage = image.filter(ImageFilter.EMBOSS)
+
+    if edit == "blur":
+        newImage = image.filter(ImageFilter.GaussianBlur(radius=4))
+
+    if edit == "color":
+        enhance = ImageEnhance.Color(image)
+        newImage = enhance.enhance(1.5)
+
+    if edit == "contrast":
+        enhance = ImageEnhance.Contrast(image)
+        newImage = enhance.enhance(1.5)
+
+    if edit == "brightness":
+        enhance = ImageEnhance.Brightness(image)
+        newImage = enhance.enhance(1.5)
+
+    newImage.save(os.path.join(f'./static/images/{filename}'))
+    return redirect(f'/images/{id}')

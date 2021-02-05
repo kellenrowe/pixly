@@ -63,12 +63,14 @@ def display_all_image():
                 f'%{request.args.get("search")}%'))
     else:
         pictures = Picture.query.all()
-  
+
     # format the url and append to an array
     picturesUrl = []
     for picture in pictures:
         picturesUrl.append({"url": f'{IMAGE_URL}{picture.id}',
-                            "id": f'{picture.id}'})
+                            "id": f'{picture.id}',
+                            "photog": f'{picture.photographer}',
+                            "caption": f'{picture.caption}'})
 
     return render_template("all_pictures.html", pictures=picturesUrl)
 

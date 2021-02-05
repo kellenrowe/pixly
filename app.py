@@ -11,6 +11,10 @@ from werkzeug.utils import secure_filename
 # from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 import botocore
 
+ACCESS_KEY_ID= os.environ["ACCESS_KEY_ID"]
+SECRET_KEY= os.environ["SECRET_KEY"]
+BUCKET=os.environ["BUCKET"]
+IMAGE_URL=os.environ["IMAGE_URL"]
 
 app = Flask(__name__)
 
@@ -38,8 +42,6 @@ client = boto3.client('s3',
                       aws_access_key_id=ACCESS_KEY_ID,
                       aws_secret_access_key=SECRET_KEY)
 
-BUCKET = 'pixly-jiang'
-IMAGE_URL = 'https://pixly-jiang.s3-us-west-1.amazonaws.com/'
 ####################### Routes ###########################
 
 

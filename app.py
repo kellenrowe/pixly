@@ -18,7 +18,7 @@ BUCKET = os.environ["BUCKET"]
 IMAGE_URL = os.environ["IMAGE_URL"]
 # s3 = S3Connection(os.environ["ACCESS_KEY_ID"], os.environ["SECRET_KEY"])
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./static")
 
 # By default allows CORS for all domains and all routes
 # CORS(app)

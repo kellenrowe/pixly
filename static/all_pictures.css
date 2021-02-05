@@ -11,3 +11,9 @@ div .image {
   cursor: pointer;
   -webkit-transform: scale(1.03);
 }
+
+.picCaption {
+  color: rgba(177, 177, 177, 0.612);
+  font-size: 12px;
+}
+

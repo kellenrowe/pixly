@@ -198,7 +198,10 @@ def edit_image_edit(id, edit):
 
     # print('edit ******* ', edit)
     filename = f'{id}.png'
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource('s3',
+                        aws_access_key_id=ACCESS_KEY_ID,
+                        aws_secret_access_key=SECRET_KEY,
+                        )
 
     if not os.path.exists(f'./static/images/{filename}'):
         # Download the picture

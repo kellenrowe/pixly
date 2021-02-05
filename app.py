@@ -2,7 +2,6 @@ import boto3
 import os
 from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-# from flask_cors import CORS
 from models import (db, connect_db, Picture)
 from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance, ImageFile
 from PIL.ExifTags import TAGS

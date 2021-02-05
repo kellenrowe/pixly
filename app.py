@@ -135,10 +135,10 @@ def add_image():
 def edit_image(id):
     """ Route for viewing and editing an image """
 
-    if os.path.exists(f'./static/images/{id}.png'):
+    if os.path.exists(f'./static/{id}.png'):
         # print('exists ******************* ')
         return render_template('edit_picture.html',
-                               url=f'../static/images/{id}.png', id=id)
+                               url=f'../static/{id}.png', id=id)
 
     # print('doesnt exist *********')
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}', id=id)
@@ -147,7 +147,7 @@ def edit_image(id):
 @app.route("/images/<id>/save", methods=["GET", "POST"])
 def edit_image_save(id):
 
-    filename = f'./static/images/{id}.png'
+    filename = f'./static/{id}.png'
 
     currentPicObj = Picture.query.get_or_404(int(id))
 
@@ -189,7 +189,7 @@ def edit_image_cancel(id):
 
     filename = f'{id}.png'
     os.remove(filename)
-    os.remove(f'./static/images/{filename}')
+    os.remove(f'./static/{filename}')
     return redirect(f'/images/{id}')
 
 
@@ -203,7 +203,7 @@ def edit_image_edit(id, edit):
                         aws_secret_access_key=SECRET_KEY,
                         )
 
-    if not os.path.exists(f'./static/images/{filename}'):
+    if not os.path.exists(f'./static/{filename}'):
         # Download the picture
         try:
             s3.Bucket(BUCKET).download_file(str(id), str(id))
@@ -218,7 +218,7 @@ def edit_image_edit(id, edit):
         image = Image.open(filename)
         # print("opening image from aws")
     else:
-        image = Image.open(f'./static/images/{filename}')
+        image = Image.open(f'./static/{filename}')
         # print("opening image from images")
 
     if edit == "grayscale":
@@ -252,5 +252,5 @@ def edit_image_edit(id, edit):
         enhance = ImageEnhance.Brightness(image)
         newImage = enhance.enhance(1.5)
 
-    newImage.save(os.path.join(f'./static/images/{filename}'))
+    newImage.save(os.path.join(f'./static/{filename}'))
     return redirect(f'/images/{id}')

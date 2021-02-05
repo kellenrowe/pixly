@@ -144,8 +144,28 @@ def edit_image_save(id):
 
     filename = f'./static/images/{id}.png'
 
+    currentPicObj = Picture.query.get_or_404(int(id))
+
+    picture = Picture(
+        photographer=currentPicObj.photographer,
+        caption=currentPicObj.caption,
+        date_time=currentPicObj.date_time,
+        camera_make=currentPicObj.camera_make,
+        camera_model=currentPicObj.camera_model,
+        iso=currentPicObj.iso,
+        flash=currentPicObj.flash,
+        pic_width=currentPicObj.pic_width,
+        pic_height=currentPicObj.pic_height,
+        # location=exif[""],
+        image_url=IMAGE_URL,
+        file_name=f'{id}.png',
+    )
+
+    db.session.add(picture)
+    db.session.commit()
+
     upload_file_bucket = BUCKET
-    upload_file_key = id
+    upload_file_key = str(picture.id)
     client.upload_file(
         filename,
         upload_file_bucket,
@@ -156,7 +176,7 @@ def edit_image_save(id):
     os.remove(filename)
     os.remove(f'{id}.png')
     # print('saved to aws')
-    return redirect(f'/images/{id}')
+    return redirect(f'/images/{picture.id}')
 
 
 @app.route("/images/<id>/cancel", methods=["GET", "POST"])

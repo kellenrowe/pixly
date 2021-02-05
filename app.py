@@ -12,10 +12,10 @@ from werkzeug.utils import secure_filename
 import botocore
 # from boto3.s3.connection import S3Connection
 
-ACCESS_KEY_ID= os.environ["ACCESS_KEY_ID"]
-SECRET_KEY= os.environ["SECRET_KEY"]
-BUCKET=os.environ["BUCKET"]
-IMAGE_URL=os.environ["IMAGE_URL"]
+ACCESS_KEY_ID = os.environ["ACCESS_KEY_ID"]
+SECRET_KEY = os.environ["SECRET_KEY"]
+BUCKET = os.environ["BUCKET"]
+IMAGE_URL = os.environ["IMAGE_URL"]
 # s3 = S3Connection(os.environ["ACCESS_KEY_ID"], os.environ["SECRET_KEY"])
 
 app = Flask(__name__)

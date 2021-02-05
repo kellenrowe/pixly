@@ -10,7 +10,7 @@ from forms import UploadForm
 from werkzeug.utils import secure_filename
 # from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 import botocore
-from boto.s3.connection import S3Connection
+from boto3.s3.connection import S3Connection
 
 ACCESS_KEY_ID= os.environ["ACCESS_KEY_ID"]
 SECRET_KEY= os.environ["SECRET_KEY"]

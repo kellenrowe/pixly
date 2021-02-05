@@ -24,11 +24,7 @@ nav a:hover {
   text-decoration: none;
 }
 
-/* .navLinks {
-    border-bottom: 1px solid rgba(203, 203, 203, 0.16);
-} */
-
-.body {
+main {
   background-color: rgb(14, 14, 14);
 }
 

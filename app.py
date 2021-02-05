@@ -117,19 +117,19 @@ def add_image():
 def edit_image(id):
     """ Route for viewing and editing an image """
 
-    if os.path.exists(f'./static/images/{id}.jpg'):
-        print('exists ******************* ')
+    if os.path.exists(f'./static/images/{id}.png'):
+        # print('exists ******************* ')
         return render_template('edit_picture.html',
-                               url=f'../static/images/{id}.jpg', id=id)
+                               url=f'../static/images/{id}.png', id=id)
 
-    print('doesnt exist *********')
+    # print('doesnt exist *********')
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}', id=id)
 
 
 @app.route("/images/<id>/save", methods=["GET", "POST"])
 def edit_image_save(id):
 
-    filename = f'./static/images/{id}.jpg'
+    filename = f'./static/images/{id}.png'
 
     upload_file_bucket = BUCKET
     upload_file_key = id
@@ -141,15 +141,15 @@ def edit_image_save(id):
     )
 
     os.remove(filename)
-    os.remove(f'{id}.jpg')
-    print('saved to aws')
+    os.remove(f'{id}.png')
+    # print('saved to aws')
     return redirect(f'/images/{id}')
 
 
 @app.route("/images/<id>/cancel", methods=["GET", "POST"])
 def edit_image_cancel(id):
 
-    filename = f'{id}.jpg'
+    filename = f'{id}.png'
     os.remove(filename)
     os.remove(f'./static/images/{filename}')
     return redirect(f'/images/{id}')
@@ -158,8 +158,8 @@ def edit_image_cancel(id):
 @app.route("/images/<int:id>/<edit>", methods=["GET", "POST"])
 def edit_image_edit(id, edit):
 
-    print('edit ******* ', edit)
-    filename = f'{id}.jpg'
+    # print('edit ******* ', edit)
+    filename = f'{id}.png'
     s3 = boto3.resource('s3')
 
     if not os.path.exists(f'./static/images/{filename}'):
@@ -179,8 +179,9 @@ def edit_image_edit(id, edit):
     else:
         image = Image.open(f'./static/images/{filename}')
         # print("opening image from images")
+
     if edit == "grayscale":
-        newImage = ImageOps.grayscale(image)       
+        newImage = ImageOps.grayscale(image)
 
     if edit == "left":
         # print('edit left')

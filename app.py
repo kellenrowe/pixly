@@ -8,7 +8,7 @@ from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance, ImageFile
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
-from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
+# from secret import ACCESS_KEY_ID, SECRET_KEY, BUCKET, IMAGE_URL
 import botocore
 
 
@@ -38,7 +38,8 @@ client = boto3.client('s3',
                       aws_access_key_id=ACCESS_KEY_ID,
                       aws_secret_access_key=SECRET_KEY)
 
-
+BUCKET = 'pixly-jiang'
+IMAGE_URL = 'https://pixly-jiang.s3-us-west-1.amazonaws.com/'
 ####################### Routes ###########################
 
 

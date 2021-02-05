@@ -1,27 +1,35 @@
-.navLinks {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
 .imgDiv {
-    height: 100vh;
-    padding-top: 180px;
+  height: 100vh;
+  padding-top: 180px;
 }
 
 .edit-img {
-    max-width: 100%;
-    max-height: 90%;
+  max-width: 100%;
+  max-height: 90%;
 }
 
-.nav2 {
-    position: fixed;
-    top: 80px;
-    width: 70%;
-    margin-left: 15%;
+#editMenu {
+  position: fixed;
+  left: 0px;
+  top: 200px;
 }
 
-.edit-btns {
-    height: 25px;
+.edit-categories {
+  margin: 15px 0 0 0px;
+  color: rgb(177, 177, 177);
+  letter-spacing: 1px;
+}
+
+#editOptions a {
+  line-height: 30px;
+  color: #a9c2dc;
+}
+
+#editOptions a:hover {
+    color: #a9c2dcaa;
+    text-decoration: none;
+  }
+
+#rule {
+    background-color: #a9c2dcaa;
 }

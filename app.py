@@ -4,7 +4,7 @@ from flask import Flask, request, redirect, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 # from flask_cors import CORS
 from models import (db, connect_db, Picture)
-from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance
+from PIL import Image, ImageFilter, ExifTags, ImageOps, ImageEnhance, ImageFile
 from PIL.ExifTags import TAGS
 from forms import UploadForm
 from werkzeug.utils import secure_filename
@@ -31,6 +31,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 db.create_all()
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 # app.config['UPLOADED_IMAGES_DEST'] = "./images/"
 
 client = boto3.client('s3',
@@ -52,8 +53,18 @@ def display_homepage():
 def display_all_image():
     """ Route for displaying all images """
 
-    pictures = Picture.query.all()
-
+    # search function
+    if request.args.get("search"):
+        if(request.args.get("searchField") == "caption"):
+            pictures = Picture.query.filter(Picture.caption.ilike(
+                f'%{request.args.get("search")}%')) 
+        else:
+            pictures = Picture.query.filter(Picture.photographer.ilike(
+                f'%{request.args.get("search")}%'))
+    else:
+        pictures = Picture.query.all()
+  
+    # format the url and append to an array
     picturesUrl = []
     for picture in pictures:
         picturesUrl.append({"url": f'{IMAGE_URL}{picture.id}',

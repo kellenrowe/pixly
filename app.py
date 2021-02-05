@@ -135,62 +135,62 @@ def add_image():
 def edit_image(id):
     """ Route for viewing and editing an image """
 
-    if os.path.exists(f'./static/{id}.png'):
-        # print('exists ******************* ')
-        return render_template('edit_picture.html',
-                               url=f'../static/{id}.png', id=id)
+    # if os.path.exists(f'./static/{id}.png'):
+    #     # print('exists ******************* ')
+    #     return render_template('edit_picture.html',
+    #                            url=f'../static/{id}.png', id=id)
 
     # print('doesnt exist *********')
     return render_template('edit_picture.html', url=f'{IMAGE_URL}{id}', id=id)
 
 
-@app.route("/images/<id>/save", methods=["GET", "POST"])
-def edit_image_save(id):
+# @app.route("/images/<id>/save", methods=["GET", "POST"])
+# def edit_image_save(id):
 
-    filename = f'./static/{id}.png'
+#     filename = f'./static/{id}.png'
 
-    currentPicObj = Picture.query.get_or_404(int(id))
+#     currentPicObj = Picture.query.get_or_404(int(id))
 
-    picture = Picture(
-        photographer=currentPicObj.photographer,
-        caption=currentPicObj.caption,
-        date_time=currentPicObj.date_time,
-        camera_make=currentPicObj.camera_make,
-        camera_model=currentPicObj.camera_model,
-        iso=currentPicObj.iso,
-        flash=currentPicObj.flash,
-        pic_width=currentPicObj.pic_width,
-        pic_height=currentPicObj.pic_height,
-        # location=exif[""],
-        image_url=IMAGE_URL,
-        file_name=f'{id}.png',
-    )
+#     picture = Picture(
+#         photographer=currentPicObj.photographer,
+#         caption=currentPicObj.caption,
+#         date_time=currentPicObj.date_time,
+#         camera_make=currentPicObj.camera_make,
+#         camera_model=currentPicObj.camera_model,
+#         iso=currentPicObj.iso,
+#         flash=currentPicObj.flash,
+#         pic_width=currentPicObj.pic_width,
+#         pic_height=currentPicObj.pic_height,
+#         # location=exif[""],
+#         image_url=IMAGE_URL,
+#         file_name=f'{id}.png',
+#     )
 
-    db.session.add(picture)
-    db.session.commit()
+#     db.session.add(picture)
+#     db.session.commit()
 
-    upload_file_bucket = BUCKET
-    upload_file_key = str(picture.id)
-    client.upload_file(
-        filename,
-        upload_file_bucket,
-        upload_file_key,
-        ExtraArgs={'ACL': 'public-read'}
-    )
+#     upload_file_bucket = BUCKET
+#     upload_file_key = str(picture.id)
+#     client.upload_file(
+#         filename,
+#         upload_file_bucket,
+#         upload_file_key,
+#         ExtraArgs={'ACL': 'public-read'}
+#     )
 
-    os.remove(filename)
-    os.remove(f'{id}.png')
-    # print('saved to aws')
-    return redirect(f'/images/{picture.id}')
+#     os.remove(filename)
+#     os.remove(f'{id}.png')
+#     # print('saved to aws')
+#     return redirect(f'/images/{picture.id}')
 
 
-@app.route("/images/<id>/cancel", methods=["GET", "POST"])
-def edit_image_cancel(id):
+# @app.route("/images/<id>/cancel", methods=["GET", "POST"])
+# def edit_image_cancel(id):
 
-    filename = f'{id}.png'
-    os.remove(filename)
-    os.remove(f'./static/{filename}')
-    return redirect(f'/images/{id}')
+#     filename = f'{id}.png'
+#     os.remove(filename)
+#     os.remove(f'./static/{filename}')
+#     return redirect(f'/images/{id}')
 
 
 @app.route("/images/<int:id>/<edit>", methods=["GET", "POST"])
@@ -203,23 +203,23 @@ def edit_image_edit(id, edit):
                         aws_secret_access_key=SECRET_KEY,
                         )
 
-    if not os.path.exists(f'./static/{filename}'):
+    # if not os.path.exists(f'./static/{filename}'):
         # Download the picture
-        try:
-            s3.Bucket(BUCKET).download_file(str(id), str(id))
+    try:
+        s3.Bucket(BUCKET).download_file(str(id), str(id))
 
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
-                print("The object does not exist.")
-            else:
-                raise
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
         # print("filename = ", filename)
-        os.rename(str(id), filename)
-        image = Image.open(filename)
+    os.rename(str(id), filename)
+    image = Image.open(filename)
         # print("opening image from aws")
-    else:
-        image = Image.open(f'./static/{filename}')
-        # print("opening image from images")
+    # else:
+    #     image = Image.open(f'./static/{filename}')
+    #     # print("opening image from images")
 
     if edit == "grayscale":
         newImage = ImageOps.grayscale(image)
@@ -252,5 +252,13 @@ def edit_image_edit(id, edit):
         enhance = ImageEnhance.Brightness(image)
         newImage = enhance.enhance(1.5)
 
-    newImage.save(os.path.join(f'./static/{filename}'))
+    newImage.save(os.path.join(filename))
+    upload_file_bucket = BUCKET
+    upload_file_key = str(id)
+    client.upload_file(
+        filename,
+        upload_file_bucket,
+        upload_file_key,
+        ExtraArgs={'ACL': 'public-read'}
+    )
     return redirect(f'/images/{id}')

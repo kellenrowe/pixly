@@ -1,11 +1,11 @@
-.formDiv {
-    height: 100vh;
-}
-
 form {
     margin-top: 150px;
     background-color: rgb(14, 14, 14);
     border-radius: 5px;
+}
+
+.formDiv {
+    height: 100vh;
 }
 
 .formField {

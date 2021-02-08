@@ -41,29 +41,21 @@ client = boto3.client('s3',
 
 @app.route("/", methods=["GET"])
 def display_homepage():
-    """ Route home page """
+    """ renders home page """
 
     return render_template("homepage.html")
 
 
 @app.route("/images", methods=["GET"])
 def display_all_image():
-    """ Route for displaying all images """
+    """ renders page for displaying all images """
 
     # search function
     if request.args.get("search"):
-        # if(request.args.get("searchField") == "caption"):
-        #     pictures = Picture.query.filter(Picture.caption.ilike(
-        #         f'%{request.args.get("search")}%')) 
-        # else:
-        #     pictures = Picture.query.filter(Picture.photographer.ilike(
-        #         f'%{request.args.get("search")}%'))
-
         pictures = Picture.query.filter(db.or_(
             Picture.caption.ilike(
                 f'%{request.args.get("search")}%'), Picture.photographer.ilike(
                 f'%{request.args.get("search")}%'))).all()
-    
     else:
         pictures = Picture.query.all()
 
@@ -131,7 +123,11 @@ def add_image():
 
 @app.route("/images/<int:id>", methods=["GET"])
 def edit_image(id):
-    """ Route for viewing and editing an image """
+    """ Route for viewing and editing an image
+        - determines if image has been downloaded already
+            and if so, pulls from local folder to perform
+            edits. Allows for non-destructive editing.
+    """
 
     # if os.path.exists(f'./static/{id}.png'):
     #     # print('exists ******************* ')
@@ -144,6 +140,10 @@ def edit_image(id):
 
 # @app.route("/images/<id>/save", methods=["GET", "POST"])
 # def edit_image_save(id):
+    # """ Route for saving an edited image.
+    #     - saves image to db and sends to s3
+    #     - removes image copy from local folder
+    # """
 
 #     filename = f'./static/{id}.png'
 
@@ -184,6 +184,10 @@ def edit_image(id):
 
 # @app.route("/images/<id>/cancel", methods=["GET", "POST"])
 # def edit_image_cancel(id):
+    # """ Route for cancelling an images edits.
+    #     - removes image copy from local folder
+    #     - redirects to edit page with original image
+    # """
 
 #     filename = f'{id}.png'
 #     os.remove(filename)
@@ -193,6 +197,11 @@ def edit_image(id):
 
 @app.route("/images/<int:id>/<edit>", methods=["GET", "POST"])
 def edit_image_edit(id, edit):
+    """ route to complete edits
+        - gets image from s3
+        - completes edit
+        - sends back to s3 (waiting for refactor of save and cancel routes)
+    """
 
     filename = f'{id}.png'
     s3 = boto3.resource('s3',

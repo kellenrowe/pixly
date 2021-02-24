@@ -1,28 +1,33 @@
 {% extends 'base.html' %} {% block content %}
-<link rel="stylesheet" href="/static/all_pictures.css">
+<link rel="stylesheet" href="/static/all_pictures.css" />
 
 <div class="container allPicsDiv mx-auto">
-    <form action="/images" class="form-group text-center mb-5" method="get">
-        <!-- <select name="searchField">
-            <option value="caption">Caption</option>
-            <option value="photographer">Photographer</option>
-        </select> -->
-        <input  placeholder="Search Term" name="search">
-        <button class="btn btn-outline-light" type="submit">Search</button>
-        <button formaction="/images" class="btn btn-outline-light" type="submit">Clear</button>
-    </form>
-    <div class="row mx-auto">
-        {% for picture in pictures %}
-        <div class="col-11 col-sm-10 col-md-6 col-lg-4 
-                    text-center mb-5 mx-auto mx-md-0 picCaption"> 
-            <a href="/images/{{picture.id}}">
-                <img class="image" src="{{picture.url}}">
-            </a>
-            <p class="mb-0 mt-1">Photographer: {{picture.photog}}</p>
-            <p>{{picture.caption}}</p>
-        </div>
-        {% endfor %}
+  <form action="/images" class="form-group text-center mb-5" method="get">
+    <input class="align-middle" placeholder="Search Term" name="search" />
+    <button class="btn btn-sm btn-outline-light align-middle" type="submit">
+      Search
+    </button>
+    <button
+      formaction="/images"
+      class="btn btn-sm btn-outline-light align-middle"
+      type="submit"
+    >
+      Clear
+    </button>
+  </form>
+  <div class="row mx-auto">
+    {% for picture in pictures %}
+    <div
+      class="col-11 col-sm-10 col-md-6 col-lg-4 text-center mb-5 mx-auto mx-md-0 picCaption"
+    >
+      <a href="/images/{{picture.id}}">
+        <img class="image" src="{{picture.url}}" />
+      </a>
+      <p class="mb-0 mt-1">Photographer: {{picture.photog}}</p>
+      <p>{{picture.caption}}</p>
     </div>
+    {% endfor %}
+  </div>
 </div>
 
 {% endblock %}

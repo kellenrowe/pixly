@@ -36,6 +36,17 @@ client = boto3.client('s3',
                       aws_access_key_id=ACCESS_KEY_ID,
                       aws_secret_access_key=SECRET_KEY)
 
+
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
 ####################### Routes ###########################
 
 
@@ -99,7 +110,6 @@ def add_image():
             flash=exif.get('Flash'),
             pic_width=exif.get('ExifImageWidth'),
             pic_height=exif.get('ExifImageHeight'),
-            # location=exif[""],
             image_url=IMAGE_URL,
             file_name=filename
         )
@@ -265,4 +275,5 @@ def edit_image_edit(id, edit):
         upload_file_key,
         ExtraArgs={'ACL': 'public-read'}
     )
+    os.remove(filename)
     return redirect(f'/images/{id}')
